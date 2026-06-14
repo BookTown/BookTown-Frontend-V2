@@ -98,8 +98,9 @@ jobs:
       # 3단계: CloudFront 캐시 무효화 (HTML 파일 및 루트 경로만 무효화)
       - name: CloudFront 캐시 무효화
         run: |
+          CLEAN_DIST_ID=$(echo "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" | tr -d '\r\n[:space:]')
           aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id "$CLEAN_DIST_ID" \
             --paths "/index.html" "/"
 
       - name: 배포 완료 알림
