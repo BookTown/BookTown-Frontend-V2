@@ -80,7 +80,8 @@ jobs:
       # 1단계: HTML — 항상 최신 진입점이어야 하므로 캐시 비활성화
       - name: S3 동기화 — HTML (캐시 없음)
         run: |
-          aws s3 sync dist/ s3://${{ vars.S3_BUCKET }} \
+          CLEAN_BUCKET=$(echo "${{ vars.S3_BUCKET }}" | tr -d '\r\n[:space:]')
+          aws s3 sync dist/ s3://$CLEAN_BUCKET \
             --exclude "*" \
             --include "*.html" \
             --cache-control "no-cache, no-store, must-revalidate" \
@@ -89,7 +90,8 @@ jobs:
       # 2단계: 해시된 정적 자산 — 파일명에 해시가 포함되므로 장기 캐시 적용
       - name: S3 동기화 — 정적 자산 (장기 캐시)
         run: |
-          aws s3 sync dist/ s3://${{ vars.S3_BUCKET }} \
+          CLEAN_BUCKET=$(echo "${{ vars.S3_BUCKET }}" | tr -d '\r\n[:space:]')
+          aws s3 sync dist/ s3://$CLEAN_BUCKET \
             --exclude "*.html" \
             --cache-control "public, max-age=31536000, immutable"
 
