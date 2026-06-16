@@ -1,18 +1,58 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import ProtectedRoute from './ProtectedRoute';
+import PublicRoute from './PublicRoute';
 import HealthCheck from '../pages/HealthCheck';
+import Login from '../pages/Login';
+import Signup from '../pages/Signup';
+import { NotFoundPage, ForbiddenPage } from '../pages/ErrorPages';
 
-const AppRoutes: React.FC = () => {
+const AppRouterBody: React.FC = () => {
+  const { isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center relative selection:bg-purple-500 selection:text-white">
+        <div className="dk-grain absolute inset-0 opacity-40" />
+        <div className="relative z-10 text-center">
+          <div className="w-10 h-10 rounded-full border-2 border-white/5 border-t-white/30 animate-spin mx-auto mb-4" />
+          <div className="text-white/40 text-[10px] font-mono tracking-wider uppercase">인증 세션 복원 중...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/health" element={<HealthCheck />} />
-        {/* Redirect default root to health dashboard for Milestone 1 validation */}
-        <Route path="/" element={<Navigate to="/health" replace />} />
-        {/* Fallback route */}
-        <Route path="*" element={<Navigate to="/health" replace />} />
+        {/* Public Routes */}
+        <Route element={<PublicRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/health" element={<HealthCheck />} />
+          <Route path="/" element={<Navigate to="/health" replace />} />
+        </Route>
+
+        {/* Error Fallback Routes */}
+        <Route path="/404" element={<NotFoundPage />} />
+        <Route path="/403" element={<ForbiddenPage />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>
     </BrowserRouter>
+  );
+};
+
+const AppRoutes: React.FC = () => {
+  return (
+    <AuthProvider>
+      <AppRouterBody />
+    </AuthProvider>
   );
 };
 

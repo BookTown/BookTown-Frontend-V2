@@ -25,9 +25,11 @@
 1. **이슈 기반 브랜치 & 커밋 컨벤션 준수**:
    - 브랜치명: `feat/issue-<num>-<desc>` 또는 `infra/issue-<num>-<desc>`
    - 커밋 메시지: `<emoji> <type>: <message> [#<issue_number>]`
-2. **배포 환경 고려**:
+2. **깃허브 이슈 연동 규칙**:
+   - **커밋 후 푸시할 때마다** 해당 작업과 연관된 GitHub Issue 본문의 체크박스(Todo List)를 조회하여, 완료된 구현 사항들을 즉시 체크(`[x]`) 처리합니다.
+3. **배포 환경 고려**:
    - CloudFront를 통한 정적 배포 구조(SPA)이므로 React Router의 404/403 에러 처리가 배포 환경에서 구성되어 있습니다.
    - 프로덕션 API base URL은 `https://api.booktown.shop`이며, 환경변수 `VITE_API_BASE_URL`로 분리 관리합니다.
-3. **코드 품질**:
+4. **코드 품질**:
    - `any` 타입 사용을 지양하고 TypeScript의 강력한 타입 시스템을 활용합니다.
    - ESLint 규칙을 준수하여 린트 에러가 없도록 유지합니다.
