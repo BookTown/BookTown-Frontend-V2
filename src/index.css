@@ -12,7 +12,7 @@
                       linear-gradient(180deg, #FFFFFF 0%, #F4F6FB 65%, #ECECF2 100%);
   --color-surface-text: #1E2330;
   
-  --color-card-bg: rgba(255, 255, 255, 0.45);
+  --color-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0.5) 100%);
   --color-card-border: rgba(0, 0, 0, 0.07);
   --color-card-text: #1E2330;
   --color-card-subtext: #505668;
@@ -41,7 +41,7 @@
                       linear-gradient(180deg, #0E1218 0%, #0B0E14 60%, #080A10 100%);
   --color-surface-text: rgba(255, 255, 255, 0.92);
 
-  --color-card-bg: rgba(255, 255, 255, 0.04);
+  --color-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 50%, rgba(255, 255, 255, 0.06) 100%);
   --color-card-border: rgba(255, 255, 255, 0.08);
   --color-card-text: rgba(255, 255, 255, 0.92);
   --color-card-subtext: rgba(255, 255, 255, 0.62);
@@ -91,6 +91,7 @@
   --animate-spin-slow: spin 1s linear infinite;
   --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
   --animate-float: float 4s ease-in-out infinite;
+  --animate-glass-wave: glass-wave 8s ease infinite;
 
   @keyframes shimmer {
     0% { background-position: -200% 0; }
@@ -107,6 +108,10 @@
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-4px); }
+  }
+  @keyframes glass-wave {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
 }
 
@@ -331,6 +336,8 @@ html, body {
 /* Liquid glass cards inside the UI */
 .glass {
   background: var(--color-card-bg);
+  background-size: 200% 200%;
+  animation: glass-wave 10s ease infinite;
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   border: 1px solid var(--color-card-border);
@@ -364,6 +371,8 @@ html, body {
 
 .glass-strong {
   background: var(--color-card-bg);
+  background-size: 200% 200%;
+  animation: glass-wave 10s ease infinite;
   backdrop-filter: blur(28px) saturate(160%);
   -webkit-backdrop-filter: blur(28px) saturate(160%);
   border: 1px solid var(--color-card-border);
@@ -533,4 +542,19 @@ em {
   align-items: center;
   gap: 8px;
   padding: 0 14px;
+}
+
+/* Custom Cursor Hiding for desktop browsers */
+@media (pointer: fine) and (min-width: 768px) {
+  html, body, a, button, input, select, textarea, [role="button"], [role="tab"], .glass-btn {
+    cursor: none !important;
+  }
+}
+
+/* Disable glass-wave animation for motion-sensitive users */
+@media (prefers-reduced-motion: reduce) {
+  .glass,
+  .glass-strong {
+    animation: none !important;
+  }
 }
