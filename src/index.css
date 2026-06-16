@@ -1,8 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700;900&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Instrument Serif", serif;
-  --font-serif: "Fraunces", "Instrument Serif", serif;
+  --font-display: "Instrument Serif", "Noto Serif KR", serif;
+  --font-serif: "Fraunces", "Instrument Serif", "Noto Serif KR", serif;
   --font-sans: "Pretendard Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 

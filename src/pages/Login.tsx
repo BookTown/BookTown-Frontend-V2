@@ -241,11 +241,11 @@ export const Login: React.FC = () => {
             </p>
           </div>
           <div className="relative z-10 mt-auto flex items-center gap-2">
-            <span className="text-[10px] glass-soft rounded-full px-2.5 py-1 text-white/70 font-mono uppercase tracking-wider">
-              JWT · Refresh 회전
+            <span className="text-[10px] glass-soft rounded-full px-2.5 py-1 text-white/70 tracking-wider">
+              시네마틱 독서 경험
             </span>
-            <span className="text-[10px] glass-soft rounded-full px-2.5 py-1 text-white/70 font-mono uppercase tracking-wider">
-              HttpOnly 쿠키
+            <span className="text-[10px] glass-soft rounded-full px-2.5 py-1 text-white/70 tracking-wider">
+              AI 문맥 가이드
             </span>
           </div>
           {/* floating covers */}
