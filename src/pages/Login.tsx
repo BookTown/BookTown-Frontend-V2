@@ -65,7 +65,7 @@ export const Login: React.FC = () => {
           다시 <em className="text-ac2">오셨네요</em>
         </h2>
         <p className="text-[11px] text-white/45 font-mono uppercase tracking-[0.14em] mt-1.5">
-          이메일로 계속하기 · {isMockMode ? 'MOCK 데모 세션' : 'JWT 보안 세션'}
+          이메일로 계속하기
         </p>
 
         <div className={`mt-6 flex flex-col ${f.gap}`}>
@@ -240,14 +240,7 @@ export const Login: React.FC = () => {
               AI 요약 · 장면 일러스트 · 이해도 퀴즈가 원문 문맥을 근거로 함께합니다.
             </p>
           </div>
-          <div className="relative z-10 mt-auto flex items-center gap-2">
-            <span className="text-[10px] glass-soft rounded-full px-2.5 py-1 text-white/70 tracking-wider">
-              시네마틱 독서 경험
-            </span>
-            <span className="text-[10px] glass-soft rounded-full px-2.5 py-1 text-white/70 tracking-wider">
-              AI 문맥 가이드
-            </span>
-          </div>
+
           {/* floating covers */}
           <div className="absolute right-[-30px] bottom-6 flex gap-4 rotate-[-8deg] opacity-90 pointer-events-none">
             <div className="w-[120px] h-[172px]">
