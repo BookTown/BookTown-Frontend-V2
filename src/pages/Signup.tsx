@@ -62,13 +62,13 @@ export const Signup: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate('/login')}
-            className="flex-1 py-2 rounded-full text-[12px] text-slate-500 dark:text-white/65 hover:text-slate-800 dark:hover:text-white transition"
+            className="flex-1 py-2 rounded-full text-[12px] text-slate-500 dark:text-white/50 hover:text-slate-800 dark:hover:text-white transition"
           >
             로그인
           </button>
           <button
             type="button"
-            className="flex-1 py-2 rounded-full text-[12px] bg-white dark:bg-white text-[#0B0E14] font-medium shadow-sm transition"
+            className="flex-1 py-2 rounded-full text-[12px] bg-white dark:bg-white/10 text-[#0B0E14] dark:text-white font-medium shadow-sm transition"
           >
             회원가입
           </button>

@@ -102,14 +102,14 @@ const HealthCheck: React.FC = () => {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <RefreshCw className="w-8 h-8 text-purple-500 animate-spin" />
-              <p className="text-slate-550 text-sm animate-pulse">Querying core components...</p>
+              <p className="text-slate-500 text-sm animate-pulse">Querying core components...</p>
             </div>
           ) : error ? (
             <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-start gap-3 my-4">
               <XCircle className="w-5 h-5 text-red-500 dark:text-red-400 shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-semibold text-red-800 dark:text-red-200 text-sm">Connection Failed</h4>
-                <p className="text-red-655/80 dark:text-red-400/80 text-xs mt-1">{error}</p>
+                <p className="text-red-600/80 dark:text-red-400/80 text-xs mt-1">{error}</p>
               </div>
             </div>
           ) : data ? (
@@ -134,7 +134,7 @@ const HealthCheck: React.FC = () => {
                 {/* MySQL */}
                 <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Database className="w-4.5 h-4.5 text-blue-500 dark:text-blue-400" />
+                    <Database className="w-5 h-5 text-blue-500 dark:text-blue-400" />
                     <div>
                       <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">MySQL Database</span>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400/70">Relational & Metadata Storage</span>
@@ -150,7 +150,7 @@ const HealthCheck: React.FC = () => {
                 {/* MongoDB */}
                 <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Database className="w-4.5 h-4.5 text-emerald-650 dark:text-emerald-400" />
+                    <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     <div>
                       <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">MongoDB</span>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400/70">Unstructured Summary & Scene Store</span>
@@ -166,7 +166,7 @@ const HealthCheck: React.FC = () => {
                 {/* Redis */}
                 <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Database className="w-4.5 h-4.5 text-rose-500" />
+                    <Database className="w-5 h-5 text-rose-500" />
                     <div>
                       <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Redis</span>
                       <span className="text-[10px] text-slate-500 dark:text-slate-400/70">In-Memory Cache & Session Store</span>
