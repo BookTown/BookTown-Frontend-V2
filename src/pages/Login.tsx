@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { DArrow, DkCover, DkMark } from '../components/Primitives';
+import { DArrow, DkCover, DkMark, ThemeToggle } from '../components/Primitives';
 
 // mock book data from unpack
 const EX_BOOKS = [
@@ -37,6 +37,17 @@ export const Login: React.FC = () => {
     }
   };
 
+  const handleSocialLogin = (provider: 'google' | 'kakao' | 'naver') => {
+    if (isMockMode) {
+      login(`${provider}@example.com`, 'social_password')
+        .then(() => navigate('/'))
+        .catch((err) => setErrorMsg(err instanceof Error ? err.message : '소셜 로그인에 실패했습니다.'));
+    } else {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://api.booktown.shop';
+      window.location.href = `${apiBaseUrl}/oauth2/authorization/${provider}`;
+    }
+  };
+
   const formElement = (compact: boolean) => {
     const f = compact
       ? { h: 'text-[26px]', gap: 'gap-3', pad: 'py-2.5', label: 'text-[11px]' }
@@ -48,31 +59,24 @@ export const Login: React.FC = () => {
         <div className="glass-soft rounded-full p-1 flex mb-6">
           <button
             type="button"
-            className="flex-1 py-2 rounded-full text-[12px] bg-white text-[#0B0E14] font-medium transition"
+            className="flex-1 py-2 rounded-full text-[12px] bg-white dark:bg-white/10 text-[#0B0E14] dark:text-white font-medium shadow-sm transition"
           >
             로그인
           </button>
           <button
             type="button"
             onClick={() => navigate('/signup')}
-            className="flex-1 py-2 rounded-full text-[12px] text-white/65 hover:text-white transition"
+            className="flex-1 py-2 rounded-full text-[12px] text-slate-500 dark:text-white/50 hover:text-slate-800 dark:hover:text-white transition"
           >
             회원가입
           </button>
         </div>
 
-        <h2 className={`font-display ${f.h} leading-[1.05] text-white`}>
-          다시 <em className="text-ac2">오셨네요</em>
-        </h2>
-        <p className="text-[11px] text-white/45 font-mono uppercase tracking-[0.14em] mt-1.5">
-          이메일로 계속하기
-        </p>
-
         <div className={`mt-6 flex flex-col ${f.gap}`}>
           <label className="block">
-            <span className={`${f.label} text-white/55`}>이메일</span>
+            <span className={`${f.label} text-slate-500 dark:text-white/55`}>이메일</span>
             <div className="mt-1.5 relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/35">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white/35">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="5" width="18" height="14" rx="2.5" />
                   <path d="m4 7 8 6 8-6" />
@@ -82,7 +86,7 @@ export const Login: React.FC = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full glass-soft rounded-xl pl-10 pr-3.5 ${f.pad} text-[14px] text-white/90 placeholder:text-white/30 focus:outline-none focus:border-white/25`}
+                className={`w-full glass-soft rounded-xl pl-10 pr-3.5 ${f.pad} text-[14px] text-slate-800 dark:text-white/90 placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:border-black/10 dark:focus:border-white/25`}
                 placeholder="you@example.com"
                 required
               />
@@ -90,9 +94,9 @@ export const Login: React.FC = () => {
           </label>
 
           <label className="block">
-            <span className={`${f.label} text-white/55`}>비밀번호</span>
+            <span className={`${f.label} text-slate-500 dark:text-white/55`}>비밀번호</span>
             <div className="mt-1.5 relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/35">
+              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white/35">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="4" y="10" width="16" height="10" rx="2.5" />
                   <path d="M8 10V7a4 4 0 0 1 8 0v3" />
@@ -102,14 +106,14 @@ export const Login: React.FC = () => {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full glass-soft rounded-xl pl-10 pr-10 ${f.pad} text-[14px] text-white/90 placeholder:text-white/30 focus:outline-none focus:border-white/25`}
+                className={`w-full glass-soft rounded-xl pl-10 pr-10 ${f.pad} text-[14px] text-slate-800 dark:text-white/90 placeholder:text-slate-400 dark:placeholder:text-white/30 focus:outline-none focus:border-black/10 dark:focus:border-white/25`}
                 placeholder="8자 이상"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 ${showPassword ? 'text-ac2' : 'text-white/35'} hover:text-white/70`}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 ${showPassword ? 'text-ac2' : 'text-slate-400 dark:text-white/35'} hover:text-slate-600 dark:hover:text-white/70`}
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" />
@@ -121,7 +125,7 @@ export const Login: React.FC = () => {
               {errorMsg ? (
                 <span className="text-[11px] text-red-400 font-medium">{errorMsg}</span>
               ) : (
-                <span className="text-[11px] text-white/35 font-light">영문·숫자 조합 8자 이상</span>
+                <span className="text-[11px] text-slate-500 dark:text-white/35 font-light">영문·숫자 조합 8자 이상</span>
               )}
               <span
                 onClick={() => alert('비밀번호 재설정 기능은 준비 중입니다.')}
@@ -146,17 +150,32 @@ export const Login: React.FC = () => {
           <DArrow className="w-4 h-4 inline-block ml-1.5 align-[-2px]" />
         </button>
 
-        <div className="flex items-center gap-3 my-5 text-[10px] text-white/30 font-mono uppercase tracking-wider">
-          <div className="h-px flex-1 bg-white/10" />
+        <div className="flex items-center gap-3 my-5 text-[10px] text-slate-400 dark:text-white/30 font-mono uppercase tracking-wider">
+          <div className="h-px flex-1 bg-black/10 dark:bg-white/10" />
           또는
-          <div className="h-px flex-1 bg-white/10" />
+          <div className="h-px flex-1 bg-black/10 dark:bg-white/10" />
         </div>
-        <div className="grid grid-cols-2 gap-2.5">
-          <button type="button" className="glass-soft rounded-full py-2.5 text-[12px] text-white/50 cursor-not-allowed" disabled>
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('google')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
             Google
           </button>
-          <button type="button" className="glass-soft rounded-full py-2.5 text-[12px] text-white/50 cursor-not-allowed" disabled>
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('kakao')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
             Kakao
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('naver')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
+            Naver
           </button>
         </div>
 
@@ -169,7 +188,7 @@ export const Login: React.FC = () => {
               className={`px-3 py-1.5 rounded-full text-[10px] font-mono border transition ${
                 isMockMode
                   ? 'bg-ac2/10 text-ac2 border-ac2/30 shadow-[0_0_12px_rgba(232,184,111,0.2)]'
-                  : 'bg-white/5 text-white/40 border-white/10'
+                  : 'bg-black/5 dark:bg-white/5 text-slate-500 dark:text-white/40 border-black/10 dark:border-white/10'
               }`}
             >
               Mocking API: {isMockMode ? 'ON' : 'OFF'}
@@ -183,11 +202,14 @@ export const Login: React.FC = () => {
   return (
     <div className="relative w-full min-h-screen dk-surface">
       <div className="dk-grain" />
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
 
       {/* 1. Mobile View (md 미만) */}
       <div className="block md:hidden h-full flex flex-col">
         {/* cinematic header band */}
-        <div className="relative h-[150px] shrink-0 overflow-hidden">
+        <div className="relative h-[150px] shrink-0 overflow-hidden bg-slate-950">
           <div
             className="absolute inset-0"
             style={{
@@ -219,7 +241,7 @@ export const Login: React.FC = () => {
       {/* 2. Desktop View (md 이상) */}
       <div className="hidden md:grid h-screen grid-cols-[1.05fr_0.95fr]">
         {/* cinematic aside */}
-        <div className="relative overflow-hidden border-r border-white/8 p-12 flex flex-col">
+        <div className="relative overflow-hidden border-r border-black/5 dark:border-white/8 p-12 flex flex-col bg-slate-950">
           <div
             className="absolute inset-0"
             style={{

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 /* ---------- Icons (monoline, currentColor) ---------- */
 export const DSearch: React.FC<React.SVGProps<SVGSVGElement>> = (p) => (
@@ -232,11 +234,11 @@ export const GlassBtn: React.FC<GlassBtnProps> = ({
 }) => {
   const sizeC = size === 'sm' ? 'px-3 py-1.5 text-[11px]' : size === 'lg' ? 'px-5 py-3 text-[13px]' : 'px-4 py-2.5 text-[12px]';
   const kindC = {
-    soft: 'glass text-white/90 rounded-full',
-    strong: 'glass-strong text-white rounded-full',
+    soft: 'glass text-slate-800 dark:text-white/90 rounded-full',
+    strong: 'glass-strong text-slate-900 dark:text-white rounded-full',
     primary: 'bg-white text-[#0B0E14] rounded-full font-medium',
     accent: 'rounded-full text-white',
-    ghost: 'text-white/70 hover:text-white rounded-full',
+    ghost: 'text-slate-500 dark:text-white/70 hover:text-slate-800 dark:hover:text-white rounded-full',
   }[kind];
 
   const accentStyle = kind === 'accent'
@@ -369,6 +371,23 @@ export const DkTabs: React.FC<DkTabsProps> = ({ active, go }) => {
   );
 };
 
+/* ---------- Theme Toggle Button ---------- */
+export const ThemeToggle: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition flex items-center justify-center"
+      title={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+      aria-label={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+      aria-pressed={theme === 'dark'}
+    >
+      {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+    </button>
+  );
+};
+
 /* ---------- Desktop top nav (glass blur) ---------- */
 export interface DkTopNavProps {
   active: string;
@@ -392,14 +411,14 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
   const norm = activeTabs[active] || active;
 
   return (
-    <div className="absolute top-0 inset-x-0 z-30 glass-dark border-b border-white/5">
+    <div className="absolute top-0 inset-x-0 z-30 glass-dark border-b border-black/5 dark:border-white/5">
       <div className="h-16 flex items-center px-8 gap-6">
         <button type="button" onClick={() => go('home')} className="flex items-baseline gap-2.5">
           <div className="w-7 h-7 rounded-full grid place-items-center" style={{ background: 'linear-gradient(135deg,#7AA3D6,#3E6FA9)' }}>
             <span className="font-display text-white text-[14px] leading-none italic">B</span>
           </div>
-          <span className="font-display text-white text-[18px] leading-none">책고을</span>
-          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/40">BOOK · TOWN</span>
+          <span className="font-display text-slate-900 dark:text-white text-[18px] leading-none font-medium">책고을</span>
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-400 dark:text-white/40">BOOK · TOWN</span>
         </button>
         <nav className="flex items-center gap-1 ml-4">
           {links.map((l) => (
@@ -407,7 +426,7 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
               key={l.id}
               type="button"
               onClick={() => go(l.id)}
-              className={`px-3 py-1.5 rounded-full text-[12px] transition ${norm === l.id ? 'glass text-white' : 'text-white/55 hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-full text-[12px] transition ${norm === l.id ? 'glass text-slate-900 dark:text-white font-medium' : 'text-slate-500 dark:text-white/55 hover:text-slate-900 dark:hover:text-white'}`}
             >
               {l.label}
             </button>
@@ -415,24 +434,29 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
         </nav>
         <div className="ml-auto flex items-center gap-3">
           <div className="relative w-[280px]">
-            <DSearch className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+            <DSearch className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-white/40" />
             <input
               placeholder="제목 · 저자 · 장르"
-              className="w-full glass-soft rounded-full pl-9 pr-3 py-2 text-[12px] text-white/85 placeholder:text-white/35 focus:outline-none focus:border-white/20"
+              className="w-full glass-soft rounded-full pl-9 pr-3 py-2 text-[12px] text-slate-800 dark:text-white/85 placeholder:text-slate-400 dark:placeholder:text-white/35 focus:outline-none focus:border-black/10 dark:focus:border-white/20"
             />
           </div>
-          <button type="button" className="p-2 rounded-full hover:bg-white/5 text-white/70">
+          <ThemeToggle />
+          <button
+            type="button"
+            className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition flex items-center justify-center"
+            aria-label="알림 확인"
+          >
             <DBell className="w-4 h-4" />
           </button>
           <button
             type="button"
             onClick={() => go('me')}
-            className="w-8 h-8 rounded-full bg-white/10 text-white text-[12px] grid place-items-center font-medium hover:bg-white/20 transition"
+            className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/10 text-slate-800 dark:text-white text-[12px] grid place-items-center font-medium hover:bg-black/10 dark:hover:bg-white/20 transition"
           >
             {nickname.slice(0, 1)}
           </button>
           {onLogout && (
-            <button type="button" onClick={onLogout} className="text-[11px] text-white/40 hover:text-white/75 transition ml-1">
+            <button type="button" onClick={onLogout} className="text-[11px] text-slate-500 dark:text-white/40 hover:text-slate-950 dark:hover:text-white/75 transition ml-1">
               로그아웃
             </button>
           )}
@@ -455,5 +479,75 @@ export const DkMark: React.FC<DkMarkProps> = ({ size = 22 }) => {
       </div>
       <span className="font-display text-white leading-none font-medium" style={{ fontSize: size * 0.92 }}>책고을</span>
     </div>
+  );
+};
+
+/* ---------- Custom Cursor (Glow Light) ---------- */
+export const CustomCursor: React.FC = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+      if (!isVisible) setIsVisible(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsVisible(false);
+    };
+
+    const handleMouseEnter = () => {
+      setIsVisible(true);
+    };
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'A' ||
+        target.tagName === 'INPUT' ||
+        target.closest('button') ||
+        target.closest('a') ||
+        target.closest('input') ||
+        target.style.cursor === 'pointer'
+      ) {
+        setIsHovered(true);
+      } else {
+        setIsHovered(false);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
+      window.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, [isVisible]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+      className="pointer-events-none fixed z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform duration-100 ease-out hidden md:block"
+      style={{
+        left: position.x,
+        top: position.y,
+        width: isHovered ? '24px' : '8px',
+        height: isHovered ? '24px' : '8px',
+        background: 'radial-gradient(circle, rgba(122,163,214,1) 0%, rgba(122,163,214,0.4) 50%, rgba(122,163,214,0) 100%)',
+        boxShadow: isHovered 
+          ? '0 0 16px rgba(122,163,214,0.8), 0 0 8px rgba(122,163,214,0.4)' 
+          : '0 0 8px rgba(122,163,214,0.6)',
+        mixBlendMode: 'difference',
+      }}
+    />
   );
 };
