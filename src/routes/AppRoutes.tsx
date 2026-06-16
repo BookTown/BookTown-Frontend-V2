@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
+import { ThemeProvider } from '../context/ThemeContext';
 import { useAuth } from '../hooks/useAuth';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
@@ -14,11 +15,11 @@ const AppRouterBody: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center relative selection:bg-purple-500 selection:text-white">
+      <div className="min-h-screen dk-surface flex flex-col items-center justify-center relative selection:bg-purple-500 selection:text-white">
         <div className="dk-grain absolute inset-0 opacity-40" />
         <div className="relative z-10 text-center">
-          <div className="w-10 h-10 rounded-full border-2 border-white/5 border-t-white/30 animate-spin mx-auto mb-4" />
-          <div className="text-white/40 text-[10px] tracking-wider">잠시만 기다려 주세요...</div>
+          <div className="w-10 h-10 rounded-full border-2 border-slate-300 dark:border-white/5 border-t-slate-800 dark:border-t-white/30 animate-spin mx-auto mb-4" />
+          <div className="text-slate-550 dark:text-white/40 text-[10px] tracking-wider">잠시만 기다려 주세요...</div>
         </div>
       </div>
     );
@@ -51,7 +52,9 @@ const AppRouterBody: React.FC = () => {
 const AppRoutes: React.FC = () => {
   return (
     <AuthProvider>
-      <AppRouterBody />
+      <ThemeProvider>
+        <AppRouterBody />
+      </ThemeProvider>
     </AuthProvider>
   );
 };
