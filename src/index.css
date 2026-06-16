@@ -545,8 +545,16 @@ em {
 }
 
 /* Custom Cursor Hiding for desktop browsers */
-@media (pointer: fine) {
+@media (pointer: fine) and (min-width: 768px) {
   html, body, a, button, input, select, textarea, [role="button"], [role="tab"], .glass-btn {
     cursor: none !important;
+  }
+}
+
+/* Disable glass-wave animation for motion-sensitive users */
+@media (prefers-reduced-motion: reduce) {
+  .glass,
+  .glass-strong {
+    animation: none !important;
   }
 }

@@ -39,7 +39,9 @@ export const Login: React.FC = () => {
 
   const handleSocialLogin = (provider: 'google' | 'kakao' | 'naver') => {
     if (isMockMode) {
-      login(`${provider}@example.com`, 'social_password').then(() => navigate('/'));
+      login(`${provider}@example.com`, 'social_password')
+        .then(() => navigate('/'))
+        .catch((err) => setErrorMsg(err instanceof Error ? err.message : '소셜 로그인에 실패했습니다.'));
     } else {
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://api.booktown.shop';
       window.location.href = `${apiBaseUrl}/oauth2/authorization/${provider}`;
