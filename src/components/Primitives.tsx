@@ -380,6 +380,8 @@ export const ThemeToggle: React.FC = () => {
       onClick={toggleTheme}
       className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition flex items-center justify-center"
       title={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+      aria-label={theme === 'light' ? '다크 모드로 전환' : '라이트 모드로 전환'}
+      aria-pressed={theme === 'dark'}
     >
       {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
     </button>
@@ -439,7 +441,11 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
             />
           </div>
           <ThemeToggle />
-          <button type="button" className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition flex items-center justify-center">
+          <button
+            type="button"
+            className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition flex items-center justify-center"
+            aria-label="알림 확인"
+          >
             <DBell className="w-4 h-4" />
           </button>
           <button
