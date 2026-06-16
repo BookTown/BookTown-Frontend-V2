@@ -69,8 +69,10 @@ client.interceptors.response.use(
                           originalRequest.url?.includes('/auth/reissue') ||
                           originalRequest.url?.includes('/auth/signup');
 
-    // Check if error is 401 Unauthorized (token expired) and not retried yet and not an auth request
-    if (error.response?.status === 401 && !originalRequest._retry && !isAuthRequest) {
+    const isMockToken = getAccessToken()?.startsWith('mock_jwt_access_token');
+
+    // Check if error is 401 Unauthorized (token expired) and not retried yet and not an auth request, and not a mock token
+    if (error.response?.status === 401 && !originalRequest._retry && !isAuthRequest && !isMockToken) {
       if (isReissuing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({

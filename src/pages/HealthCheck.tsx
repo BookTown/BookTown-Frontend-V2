@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import client from '../api/client';
 import { Activity, Server, Database, RefreshCw, CheckCircle, XCircle } from 'lucide-react';
 
+import { useAuth } from '../hooks/useAuth';
+import { DkTopNav } from '../components/Primitives';
+
 interface ServiceStatus {
   status: string;
   services: {
@@ -12,6 +15,7 @@ interface ServiceStatus {
 }
 
 const HealthCheck: React.FC = () => {
+  const { user, logout } = useAuth();
   const [data, setData] = useState<ServiceStatus | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,7 +47,8 @@ const HealthCheck: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6 selection:bg-purple-500 selection:text-white">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-6 pt-24 selection:bg-purple-500 selection:text-white relative">
+      <DkTopNav active="home" go={(tab) => console.log('Go to tab:', tab)} onLogout={logout} nickname={user?.nickname || '민'} />
       {/* Background Gradient Orbs */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none animate-pulse"></div>
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none animate-pulse delay-1000"></div>
