@@ -29,9 +29,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const savedToken = localStorage.getItem('bt_mock_token');
           const savedUser = localStorage.getItem('bt_mock_user');
           if (savedToken && savedUser) {
-            setAccessTokenState(savedToken);
-            setAccessToken(savedToken);
-            setUser(JSON.parse(savedUser));
+            try {
+              const parsedUser = JSON.parse(savedUser);
+              setAccessTokenState(savedToken);
+              setAccessToken(savedToken);
+              setUser(parsedUser);
+            } catch (e) {
+              console.error('Failed to parse saved mock user:', e);
+              localStorage.removeItem('bt_mock_token');
+              localStorage.removeItem('bt_mock_user');
+            }
           }
         }
         setIsLoading(false);
@@ -39,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
-        const response = await client.post('/auth/reissue');
+        const response = await client.post('/auth/reissue', {}, { withCredentials: true });
         const { accessToken: token } = response.data.data;
         setAccessTokenState(token);
         setAccessToken(token);
@@ -144,7 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      await client.post('/auth/logout');
+      await client.post('/auth/logout', {}, { withCredentials: true });
     } catch (error) {
       console.error('Server logout failed:', error);
     } finally {
