@@ -227,6 +227,7 @@ export const GlassBtn: React.FC<GlassBtnProps> = ({
   kind = 'soft',
   size = 'md',
   className = '',
+  type = 'button',
   ...rest
 }) => {
   const sizeC = size === 'sm' ? 'px-3 py-1.5 text-[11px]' : size === 'lg' ? 'px-5 py-3 text-[13px]' : 'px-4 py-2.5 text-[12px]';
@@ -246,7 +247,7 @@ export const GlassBtn: React.FC<GlassBtnProps> = ({
     : undefined;
 
   return (
-    <button className={`glass-btn ${kindC} ${sizeC} ${className}`} style={accentStyle} {...rest}>
+    <button type={type} className={`glass-btn ${kindC} ${sizeC} ${className}`} style={accentStyle} {...rest}>
       {children}
     </button>
   );
@@ -355,6 +356,7 @@ export const DkTabs: React.FC<DkTabsProps> = ({ active, go }) => {
         return (
           <button
             key={it.id}
+            type="button"
             onClick={() => go(it.id)}
             className={`flex-1 flex flex-col items-center gap-0.5 py-1.5 rounded-full transition ${on ? 'text-white' : 'text-white/50'}`}
           >
@@ -392,7 +394,7 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
   return (
     <div className="absolute top-0 inset-x-0 z-30 glass-dark border-b border-white/5">
       <div className="h-16 flex items-center px-8 gap-6">
-        <button onClick={() => go('home')} className="flex items-baseline gap-2.5">
+        <button type="button" onClick={() => go('home')} className="flex items-baseline gap-2.5">
           <div className="w-7 h-7 rounded-full grid place-items-center" style={{ background: 'linear-gradient(135deg,#7AA3D6,#3E6FA9)' }}>
             <span className="font-display text-white text-[14px] leading-none italic">B</span>
           </div>
@@ -403,6 +405,7 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
           {links.map((l) => (
             <button
               key={l.id}
+              type="button"
               onClick={() => go(l.id)}
               className={`px-3 py-1.5 rounded-full text-[12px] transition ${norm === l.id ? 'glass text-white' : 'text-white/55 hover:text-white'}`}
             >
@@ -418,17 +421,18 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
               className="w-full glass-soft rounded-full pl-9 pr-3 py-2 text-[12px] text-white/85 placeholder:text-white/35 focus:outline-none focus:border-white/20"
             />
           </div>
-          <button className="p-2 rounded-full hover:bg-white/5 text-white/70">
+          <button type="button" className="p-2 rounded-full hover:bg-white/5 text-white/70">
             <DBell className="w-4 h-4" />
           </button>
           <button
+            type="button"
             onClick={() => go('me')}
             className="w-8 h-8 rounded-full bg-white/10 text-white text-[12px] grid place-items-center font-medium hover:bg-white/20 transition"
           >
             {nickname.slice(0, 1)}
           </button>
           {onLogout && (
-            <button onClick={onLogout} className="text-[11px] text-white/40 hover:text-white/75 transition ml-1">
+            <button type="button" onClick={onLogout} className="text-[11px] text-white/40 hover:text-white/75 transition ml-1">
               로그아웃
             </button>
           )}

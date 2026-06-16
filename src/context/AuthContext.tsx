@@ -12,39 +12,68 @@ interface AxiosErrorResponse {
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // 로컬스토리지를 초기 상태값(initial state)에서 직접 조회하여 동기 세션 복원
   const [isMockMode, setIsMockMode] = useState<boolean>(() => {
+    if (!import.meta.env.DEV) return false;
     const savedMockMode = localStorage.getItem('bt_mock_mode');
-    return savedMockMode !== null ? savedMockMode === 'true' : true;
+    return savedMockMode !== null ? savedMockMode === 'true' : false;
   });
 
-  const [user, setUser] = useState<User | null>(() => {
-    const savedUser = localStorage.getItem('bt_user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [accessTokenState, setAccessTokenState] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const [accessTokenState, setAccessTokenState] = useState<string | null>(() => {
-    const savedToken = localStorage.getItem('bt_token');
-    return savedToken || null;
-  });
-
-  // setAccessToken은 외부 모듈(client.ts)의 변수를 갱신하므로 Effect에서 1회 수행
   useEffect(() => {
-    const savedToken = localStorage.getItem('bt_token');
-    if (savedToken) {
-      setAccessToken(savedToken);
-    }
-  }, []);
+    const initAuth = async () => {
+      if (isMockMode) {
+        if (import.meta.env.DEV) {
+          const savedToken = localStorage.getItem('bt_mock_token');
+          const savedUser = localStorage.getItem('bt_mock_user');
+          if (savedToken && savedUser) {
+            setAccessTokenState(savedToken);
+            setAccessToken(savedToken);
+            setUser(JSON.parse(savedUser));
+          }
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await client.post('/auth/reissue');
+        const { accessToken: token } = response.data.data;
+        setAccessTokenState(token);
+        setAccessToken(token);
+
+        const userResponse = await client.get('/users/me');
+        const { nickname, email } = userResponse.data.data;
+        setUser({ nickname, email });
+      } catch (error) {
+        console.warn('Silent refresh failed or unauthorized:', error);
+        setAccessTokenState(null);
+        setAccessToken(null);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initAuth();
+  }, [isMockMode]);
 
   const toggleMockMode = () => {
+    if (!import.meta.env.DEV) return;
     const nextMode = !isMockMode;
     setIsMockMode(nextMode);
     localStorage.setItem('bt_mock_mode', String(nextMode));
+    setAccessTokenState(null);
+    setAccessToken(null);
+    setUser(null);
+    localStorage.removeItem('bt_mock_token');
+    localStorage.removeItem('bt_mock_user');
   };
 
   const login = async (email: string, password: string) => {
     if (isMockMode) {
-      // Mock Login
       await new Promise((resolve) => setTimeout(resolve, 800));
       if (!email || !password) {
         throw new Error('이메일과 비밀번호를 입력해주세요.');
@@ -56,12 +85,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAccessToken(mockToken);
       setUser(mockUser);
 
-      localStorage.setItem('bt_token', mockToken);
-      localStorage.setItem('bt_user', JSON.stringify(mockUser));
+      if (import.meta.env.DEV) {
+        localStorage.setItem('bt_mock_token', mockToken);
+        localStorage.setItem('bt_mock_user', JSON.stringify(mockUser));
+      }
       return;
     }
 
-    // Real API Call
     try {
       const response = await client.post('/auth/login', { email, password });
       const { accessToken: token, nickname } = response.data.data;
@@ -70,9 +100,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       const realUser = { nickname, email };
       setUser(realUser);
-
-      localStorage.setItem('bt_token', token);
-      localStorage.setItem('bt_user', JSON.stringify(realUser));
     } catch (error: unknown) {
       let errorMsg = '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.';
       const axiosError = error as AxiosErrorResponse;
@@ -85,7 +112,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signup = async (nickname: string, email: string, password: string) => {
     if (isMockMode) {
-      // Mock Signup
       await new Promise((resolve) => setTimeout(resolve, 800));
       if (!nickname || !email || !password) {
         throw new Error('모든 필드를 입력해 주세요.');
@@ -93,7 +119,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    // Real API Call
     try {
       await client.post('/auth/signup', { nickname, email, password });
     } catch (error: unknown) {
@@ -106,12 +131,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
-    setAccessTokenState(null);
-    setAccessToken(null);
-    setUser(null);
-    localStorage.removeItem('bt_token');
-    localStorage.removeItem('bt_user');
+  const logout = async () => {
+    if (isMockMode) {
+      setAccessTokenState(null);
+      setAccessToken(null);
+      setUser(null);
+      if (import.meta.env.DEV) {
+        localStorage.removeItem('bt_mock_token');
+        localStorage.removeItem('bt_mock_user');
+      }
+      return;
+    }
+
+    try {
+      await client.post('/auth/logout');
+    } catch (error) {
+      console.error('Server logout failed:', error);
+    } finally {
+      setAccessTokenState(null);
+      setAccessToken(null);
+      setUser(null);
+    }
   };
 
   const isAuthenticated = !!accessTokenState;
@@ -123,6 +163,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated,
         user,
         isMockMode,
+        isLoading,
         toggleMockMode,
         login,
         signup,

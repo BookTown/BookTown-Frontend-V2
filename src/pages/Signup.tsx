@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { DArrow, DkCover, DkMark } from '../components/Primitives';
@@ -12,6 +12,13 @@ const EX_BOOKS = [
 export const Signup: React.FC = () => {
   const navigate = useNavigate();
   const { signup, isMockMode, toggleMockMode } = useAuth();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
@@ -33,7 +40,7 @@ export const Signup: React.FC = () => {
     try {
       await signup(nickname, email, password);
       setSuccessMsg('회원가입이 완료되었습니다! 잠시 후 로그인 페이지로 이동합니다.');
-      setTimeout(() => {
+      timerRef.current = setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (err: unknown) {
@@ -180,20 +187,22 @@ export const Signup: React.FC = () => {
           </button>
         </div>
 
-        {/* Mock Mode Control Button */}
-        <div className="mt-8 flex justify-center">
-          <button
-            type="button"
-            onClick={toggleMockMode}
-            className={`px-3 py-1.5 rounded-full text-[10px] font-mono border transition ${
-              isMockMode
-                ? 'bg-ac2/10 text-ac2 border-ac2/30 shadow-[0_0_12px_rgba(232,184,111,0.2)]'
-                : 'bg-white/5 text-white/40 border-white/10'
-            }`}
-          >
-            Mocking API: {isMockMode ? 'ON' : 'OFF'}
-          </button>
-        </div>
+        {/* Mock Mode Control Button (Development Only) */}
+        {import.meta.env.DEV && (
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={toggleMockMode}
+              className={`px-3 py-1.5 rounded-full text-[10px] font-mono border transition ${
+                isMockMode
+                  ? 'bg-ac2/10 text-ac2 border-ac2/30 shadow-[0_0_12px_rgba(232,184,111,0.2)]'
+                  : 'bg-white/5 text-white/40 border-white/10'
+              }`}
+            >
+              Mocking API: {isMockMode ? 'ON' : 'OFF'}
+            </button>
+          </div>
+        )}
       </form>
     );
   };

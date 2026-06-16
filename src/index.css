@@ -27,7 +27,7 @@
   --animate-shimmer: shimmer 2.6s linear infinite;
   --animate-caret: caret 1s steps(1, end) infinite;
   --animate-spin-slow: spin 1s linear infinite;
-  --animate-pulse-soft: pulseSoft 1.6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
   --animate-float: float 4s ease-in-out infinite;
 
   @keyframes shimmer {
@@ -38,7 +38,7 @@
     0%, 50% { opacity: 1; }
     50.01%, 100% { opacity: 0; }
   }
-  @keyframes pulseSoft {
+  @keyframes pulse-soft {
     0%, 100% { opacity: .55; }
     50% { opacity: 1; }
   }

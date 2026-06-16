@@ -123,7 +123,12 @@ export const Login: React.FC = () => {
               ) : (
                 <span className="text-[11px] text-white/35 font-light">영문·숫자 조합 8자 이상</span>
               )}
-              <span className="text-[11px] text-ac2/80 cursor-pointer hover:text-ac2">비밀번호 재설정 →</span>
+              <span
+                onClick={() => alert('비밀번호 재설정 기능은 준비 중입니다.')}
+                className="text-[11px] text-ac2/80 cursor-pointer hover:text-ac2"
+              >
+                비밀번호 재설정 →
+              </span>
             </div>
           </label>
         </div>
@@ -155,20 +160,22 @@ export const Login: React.FC = () => {
           </button>
         </div>
 
-        {/* Mock Mode Control Button */}
-        <div className="mt-8 flex justify-center">
-          <button
-            type="button"
-            onClick={toggleMockMode}
-            className={`px-3 py-1.5 rounded-full text-[10px] font-mono border transition ${
-              isMockMode
-                ? 'bg-ac2/10 text-ac2 border-ac2/30 shadow-[0_0_12px_rgba(232,184,111,0.2)]'
-                : 'bg-white/5 text-white/40 border-white/10'
-            }`}
-          >
-            Mocking API: {isMockMode ? 'ON' : 'OFF'}
-          </button>
-        </div>
+        {/* Mock Mode Control Button (Development Only) */}
+        {import.meta.env.DEV && (
+          <div className="mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={toggleMockMode}
+              className={`px-3 py-1.5 rounded-full text-[10px] font-mono border transition ${
+                isMockMode
+                  ? 'bg-ac2/10 text-ac2 border-ac2/30 shadow-[0_0_12px_rgba(232,184,111,0.2)]'
+                  : 'bg-white/5 text-white/40 border-white/10'
+              }`}
+            >
+              Mocking API: {isMockMode ? 'ON' : 'OFF'}
+            </button>
+          </div>
+        )}
       </form>
     );
   };

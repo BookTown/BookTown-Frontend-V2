@@ -10,10 +10,11 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
   isMockMode: boolean;
+  isLoading: boolean;
   toggleMockMode: () => void;
   login: (email: string, password: string) => Promise<void>;
   signup: (nickname: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
