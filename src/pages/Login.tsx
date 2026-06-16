@@ -37,6 +37,15 @@ export const Login: React.FC = () => {
     }
   };
 
+  const handleSocialLogin = (provider: 'google' | 'kakao' | 'naver') => {
+    if (isMockMode) {
+      login(`${provider}@example.com`, 'social_password').then(() => navigate('/'));
+    } else {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://api.booktown.shop';
+      window.location.href = `${apiBaseUrl}/oauth2/authorization/${provider}`;
+    }
+  };
+
   const formElement = (compact: boolean) => {
     const f = compact
       ? { h: 'text-[26px]', gap: 'gap-3', pad: 'py-2.5', label: 'text-[11px]' }
@@ -60,13 +69,6 @@ export const Login: React.FC = () => {
             회원가입
           </button>
         </div>
-
-        <h2 className={`font-display ${f.h} leading-[1.05] text-slate-900 dark:text-white`}>
-          다시 <em className="text-ac2">오셨네요</em>
-        </h2>
-        <p className="text-[11px] text-slate-500 dark:text-white/45 font-mono uppercase tracking-[0.14em] mt-1.5">
-          이메일로 계속하기
-        </p>
 
         <div className={`mt-6 flex flex-col ${f.gap}`}>
           <label className="block">
@@ -151,12 +153,27 @@ export const Login: React.FC = () => {
           또는
           <div className="h-px flex-1 bg-black/10 dark:bg-white/10" />
         </div>
-        <div className="grid grid-cols-2 gap-2.5">
-          <button type="button" className="glass-soft rounded-full py-2.5 text-[12px] text-slate-500 dark:text-white/50 cursor-not-allowed" disabled>
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('google')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
             Google
           </button>
-          <button type="button" className="glass-soft rounded-full py-2.5 text-[12px] text-slate-500 dark:text-white/50 cursor-not-allowed" disabled>
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('kakao')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
             Kakao
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('naver')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
+            Naver
           </button>
         </div>
 

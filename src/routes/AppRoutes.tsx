@@ -9,6 +9,7 @@ import HealthCheck from '../pages/HealthCheck';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import { NotFoundPage, ForbiddenPage } from '../pages/ErrorPages';
+import { CustomCursor } from '../components/Primitives';
 
 const AppRouterBody: React.FC = () => {
   const { isLoading } = useAuth();
@@ -53,6 +54,7 @@ const AppRoutes: React.FC = () => {
   return (
     <AuthProvider>
       <ThemeProvider>
+        <CustomCursor />
         <AppRouterBody />
       </ThemeProvider>
     </AuthProvider>

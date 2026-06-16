@@ -11,7 +11,7 @@ const EX_BOOKS = [
 
 export const Signup: React.FC = () => {
   const navigate = useNavigate();
-  const { signup, isMockMode, toggleMockMode } = useAuth();
+  const { signup, login, isMockMode, toggleMockMode } = useAuth();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -47,6 +47,15 @@ export const Signup: React.FC = () => {
       setErrorMsg(err instanceof Error ? err.message : '회원가입에 실패했습니다.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSocialLogin = (provider: 'google' | 'kakao' | 'naver') => {
+    if (isMockMode) {
+      login(`${provider}@example.com`, 'social_password').then(() => navigate('/'));
+    } else {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://api.booktown.shop';
+      window.location.href = `${apiBaseUrl}/oauth2/authorization/${provider}`;
     }
   };
 
@@ -178,12 +187,27 @@ export const Signup: React.FC = () => {
           또는
           <div className="h-px flex-1 bg-black/10 dark:bg-white/10" />
         </div>
-        <div className="grid grid-cols-2 gap-2.5">
-          <button type="button" className="glass-soft rounded-full py-2.5 text-[12px] text-slate-500 dark:text-white/50 cursor-not-allowed" disabled>
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('google')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
             Google
           </button>
-          <button type="button" className="glass-soft rounded-full py-2.5 text-[12px] text-slate-500 dark:text-white/50 cursor-not-allowed" disabled>
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('kakao')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
             Kakao
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSocialLogin('naver')}
+            className="glass-soft rounded-full py-2.5 text-[12px] text-slate-700 dark:text-white/70 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition"
+          >
+            Naver
           </button>
         </div>
 

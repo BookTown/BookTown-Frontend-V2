@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
@@ -479,5 +479,75 @@ export const DkMark: React.FC<DkMarkProps> = ({ size = 22 }) => {
       </div>
       <span className="font-display text-white leading-none font-medium" style={{ fontSize: size * 0.92 }}>책고을</span>
     </div>
+  );
+};
+
+/* ---------- Custom Cursor (Glow Light) ---------- */
+export const CustomCursor: React.FC = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+      if (!isVisible) setIsVisible(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsVisible(false);
+    };
+
+    const handleMouseEnter = () => {
+      setIsVisible(true);
+    };
+
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'A' ||
+        target.tagName === 'INPUT' ||
+        target.closest('button') ||
+        target.closest('a') ||
+        target.closest('input') ||
+        target.style.cursor === 'pointer'
+      ) {
+        setIsHovered(true);
+      } else {
+        setIsHovered(false);
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mouseover', handleMouseOver);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
+      window.removeEventListener('mouseover', handleMouseOver);
+    };
+  }, [isVisible]);
+
+  if (!isVisible) return null;
+
+  return (
+    <div
+      className="pointer-events-none fixed z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform duration-100 ease-out hidden md:block"
+      style={{
+        left: position.x,
+        top: position.y,
+        width: isHovered ? '24px' : '8px',
+        height: isHovered ? '24px' : '8px',
+        background: 'radial-gradient(circle, rgba(122,163,214,1) 0%, rgba(122,163,214,0.4) 50%, rgba(122,163,214,0) 100%)',
+        boxShadow: isHovered 
+          ? '0 0 16px rgba(122,163,214,0.8), 0 0 8px rgba(122,163,214,0.4)' 
+          : '0 0 8px rgba(122,163,214,0.6)',
+        mixBlendMode: 'difference',
+      }}
+    />
   );
 };
