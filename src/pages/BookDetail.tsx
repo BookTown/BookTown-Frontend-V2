@@ -104,8 +104,8 @@ export const BookDetail: React.FC = () => {
         go={(tab) => {
           if (tab === 'home') {
             navigate('/');
-          } else if (tab === 'history') {
-            navigate('/health');
+          } else if (tab === 'admin') {
+            navigate('/admin');
           } else {
             alert('준비 중인 기능입니다!');
           }

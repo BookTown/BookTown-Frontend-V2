@@ -234,8 +234,8 @@ const QuizLayout: React.FC<QuizLayoutProps> = ({
   const handleGo = (tab: string) => {
     if (tab === 'home') {
       navigate('/');
-    } else if (tab === 'history') {
-      navigate('/health');
+    } else if (tab === 'admin') {
+      navigate('/admin');
     } else {
       alert('준비 중인 기능입니다!');
     }

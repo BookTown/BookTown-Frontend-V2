@@ -15,7 +15,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isMockMode, setIsMockMode] = useState<boolean>(() => {
     if (!import.meta.env.DEV) return false;
     const savedMockMode = localStorage.getItem('bt_mock_mode');
-    return savedMockMode !== null ? savedMockMode === 'true' : false;
+    return savedMockMode !== null ? savedMockMode === 'true' : true;
   });
 
   const [user, setUser] = useState<User | null>(null);

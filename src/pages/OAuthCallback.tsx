@@ -4,9 +4,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 export const OAuthSuccess: React.FC = () => {
   useEffect(() => {
     // 백엔드가 심어준 쿠키(refreshToken)를 바탕으로 세션을 갱신하기 위해
-    // 페이지 전체를 새로고침하며 /health로 이동합니다.
+    // 페이지 전체를 새로고침하며 /로 이동합니다.
     const timer = setTimeout(() => {
-      window.location.replace('/health');
+      window.location.replace('/');
     }, 1000);
     return () => clearTimeout(timer);
   }, []);
