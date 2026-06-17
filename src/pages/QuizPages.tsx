@@ -78,6 +78,70 @@ const MOCK_QUIZZES: Record<string, Question[]> = {
       explain: '톰은 부유한 상류층으로서 이기적이고 폭력적이며 자신의 안위만을 챙기는 인물입니다.',
     },
   ],
+  miserables: [
+    {
+      q: '장발장이 빵 한 조각을 훔치고 복역한 총 기간은 몇 년인가요?',
+      choices: ['5년', '19년', '10년', '15년'],
+      answer: 1,
+      explain: '장발장은 빵 한 조각을 훔친 죄로 5년을 선고받았으나 탈옥 시도들로 인해 총 19년간 복역했습니다.',
+    },
+    {
+      q: '장발장에게 은식기를 건네주며 그의 영혼을 구원한 인물은?',
+      choices: ['코제트', '미리엘 주교', '자베르 경감', '판틴'],
+      answer: 1,
+      explain: '미리엘 주교는 장발장이 은식기를 훔쳤음에도 은촛대까지 얹어주며 그에게 새로운 삶을 살도록 감화시켰습니다.',
+    },
+    {
+      q: '평생 장발장을 끈질기게 추적하는 집념의 수사관은?',
+      choices: ['마리우스', '자베르', '떼나르디에', '포슐르방'],
+      answer: 1,
+      explain: '자베르 경감은 법과 정의만을 신봉하며 평생 장발장의 뒤를 쫓는 인물입니다.',
+    },
+    {
+      q: '코제트의 어머니이자 장발장이 임종을 지키며 돌보겠다고 약속한 여인은?',
+      choices: ['에포닌', '판틴', '젤루즈', '심플리스'],
+      answer: 1,
+      explain: '판틴은 딸 코제트를 위해 자신을 희생한 비극적 여인이며, 장발장은 그녀의 사후 코제트를 친딸처럼 양육합니다.',
+    },
+    {
+      q: '소설의 결말에서 장발장이 마리우스를 구출해 낸 장소는 어디인가요?',
+      choices: ['파리의 하수구', '바리케이드 요새', '센 강변', '룩셈부르크 공원'],
+      answer: 0,
+      explain: '장발장은 혁명 바리케이드에서 부상당한 마리우스를 짊어지고 파리의 어두운 하수구를 통해 극적으로 탈출합니다.',
+    },
+  ],
+  jane: [
+    {
+      q: '제인 에어가 유년 시절 학대를 받으며 자란 친척 집의 이름은 무엇인가요?',
+      choices: ['손필드 저택', '게이츠헤드 홀', '로우드 학교', '무어 하우스'],
+      answer: 1,
+      explain: '제인은 외숙모 리드 부인과 사촌들로부터 게이츠헤드 홀에서 극심한 정신적, 신체적 학대를 받았습니다.',
+    },
+    {
+      q: '제인 에어가 손필드 저택에서 만난, 비밀을 간직한 인물이자 격정적인 사랑을 나누는 주인은?',
+      choices: ['싱클레어', '로체스터', '세인트 존', '블록클허스트'],
+      answer: 1,
+      explain: '제인은 에드워드 로체스터 씨의 가정교사로 들어가 그와 깊은 사랑에 빠집니다.',
+    },
+    {
+      q: '로체스터가 제인과의 결혼식에서 숨기고 있던 충격적인 비밀은 무엇인가요?',
+      choices: ['전과자였다는 사실', '손필드 다락방에 미친 아내가 있다는 사실', '파산 상태라는 사실', '데이지라는 다른 약혼녀가 있다는 사실'],
+      answer: 1,
+      explain: '로체스터는 다락방에 광증을 앓는 아내 버사 메이슨을 감금하고 있었다는 사실이 식장에서 폭로되었습니다.',
+    },
+    {
+      q: '손필드를 떠나 방황하던 제인에게 일자리와 안식처를 주고 나중에 청혼까지 하는 목사의 이름은?',
+      choices: ['에드워드 로체스터', '세인트 존 리버스', '블록클허스트', '로이드'],
+      answer: 1,
+      explain: '목사 세인트 존 리버스는 갈 곳 없는 제인을 구해주고 함께 인도로 선교 활동을 가자며 청혼합니다.',
+    },
+    {
+      q: '제인이 마침내 로체스터에게 돌아왔을 때, 로체스터는 어떤 상태였나요?',
+      choices: ['다른 여자와 행복하게 살고 있었다', '화재로 시력을 잃고 한쪽 손을 다친 상태였다', '이미 세상을 떠난 뒤였다', '제인을 알아보지 못하고 미쳐 있었다'],
+      answer: 1,
+      explain: '아내 버사가 지른 화재로 손필드는 전소되었으며, 로체스터는 아내를 구하려다 시력과 한쪽 손을 잃고 홀로 지내고 있었습니다.',
+    },
+  ],
 };
 
 const DEFAULT_QUIZ: Question[] = [
@@ -230,8 +294,7 @@ export const QuizPage: React.FC = () => {
   const next = () => {
     if (i === questions.length - 1) {
       navigate(`/books/${book.id}/quiz/result`, {
-        state: { score, total: questions.length, answers },
-        replace: true,
+        state: { score, total: questions.length, answers }
       });
       return;
     }
@@ -374,13 +437,13 @@ export const QuizPage: React.FC = () => {
             </div>
             <aside className="space-y-3">
               <div className="glass rounded-2xl p-5 border border-white/5">
-                <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">나의 이해도</div>
+                <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">퀴즈 진행률</div>
                 <div className="flex items-end gap-1 mt-2">
-                  <div className="font-display text-[44px] leading-none font-bold">82</div>
+                  <div className="font-display text-[44px] leading-none font-bold">{Math.round((i / questions.length) * 100)}</div>
                   <div className="text-[10px] text-white/45 mb-1.5 font-mono">%</div>
                 </div>
                 <div className="mt-3 h-[2px] bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-white" style={{ width: '82%' }} />
+                  <div className="h-full bg-white" style={{ width: `${Math.round((i / questions.length) * 100)}%` }} />
                 </div>
               </div>
             </aside>
@@ -406,40 +469,11 @@ export const QuizResultPage: React.FC = () => {
     answers?: Array<{ q: string; correct: string; chosen: string; ok: boolean }>;
   } | null;
 
-  const score = state?.score ?? 4;
-  const total = state?.total ?? 5;
-  const answers = state?.answers ?? [
-    {
-      q: '엘리자베스 베넷은 몇 자매 중 몇째인가요?',
-      correct: '다섯 자매 중 둘째',
-      chosen: '다섯 자매 중 둘째',
-      ok: true,
-    },
-    {
-      q: '다아시의 첫 청혼 어조로 가장 적절한 것은?',
-      correct: '오만함',
-      chosen: '오만함',
-      ok: true,
-    },
-    {
-      q: '"펨벌리"는 누구의 저택인가요?',
-      correct: '다아시',
-      chosen: '다아시',
-      ok: true,
-    },
-    {
-      q: '리디아와 함께 도망친 인물은?',
-      correct: '위컴',
-      chosen: '위컴',
-      ok: true,
-    },
-    {
-      q: '"Prejudice(편견)"은 주로 누구의 감정을 가리키나요?',
-      correct: '엘리자베스가 다아시에 대해',
-      chosen: '다아시가 베넷 가에 대해',
-      ok: false,
-    },
-  ];
+  useEffect(() => {
+    if (!state) {
+      navigate(`/books/${bookId}`, { replace: true });
+    }
+  }, [state, navigate, bookId]);
 
   useEffect(() => {
     if (!bookId) return;
@@ -458,6 +492,13 @@ export const QuizResultPage: React.FC = () => {
 
     fetchBook();
   }, [bookId, isMockMode]);
+
+  if (!state) return null;
+
+  const score = state.score ?? 0;
+  const total = state.total ?? 5;
+  const answers = state.answers ?? [];
+
 
   if (loading || !book) {
     return (
