@@ -5,13 +5,15 @@ import { ThemeProvider } from '../context/ThemeContext';
 import { useAuth } from '../hooks/useAuth';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
-import HealthCheck from '../pages/HealthCheck';
+import AdminRoute from './AdminRoute';
+import AdminDashboard from '../pages/AdminDashboard';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
 import BookHome from '../pages/BookHome';
 import BookDetail from '../pages/BookDetail';
 import { OAuthSuccess, OAuthFailure } from '../pages/OAuthCallback';
 import { NotFoundPage, ForbiddenPage } from '../pages/ErrorPages';
+import { QuizPage, QuizResultPage } from '../pages/QuizPages';
 import { CustomCursor } from '../components/Primitives';
 
 
@@ -45,9 +47,16 @@ const AppRouterBody: React.FC = () => {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/health" element={<HealthCheck />} />
+          <Route path="/health" element={<Navigate to="/admin" replace />} />
           <Route path="/books/:bookId" element={<BookDetail />} />
+          <Route path="/books/:bookId/quiz" element={<QuizPage />} />
+          <Route path="/books/:bookId/quiz/result" element={<QuizResultPage />} />
           <Route path="/" element={<BookHome />} />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
 
         {/* Error Fallback Routes */}

@@ -15,7 +15,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isMockMode, setIsMockMode] = useState<boolean>(() => {
     if (!import.meta.env.DEV) return false;
     const savedMockMode = localStorage.getItem('bt_mock_mode');
-    return savedMockMode !== null ? savedMockMode === 'true' : false;
+    return savedMockMode !== null ? savedMockMode === 'true' : true;
   });
 
   const [user, setUser] = useState<User | null>(null);
@@ -52,8 +52,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setAccessToken(token);
 
         const userResponse = await client.get('/users/me');
-        const { nickname, email } = userResponse.data.data;
-        setUser({ nickname, email });
+        const { nickname, email, role } = userResponse.data.data;
+        setUser({ nickname, email, role: role || 'USER' });
       } catch (error) {
         console.warn('Silent refresh failed or unauthorized:', error);
         setAccessTokenState(null);
@@ -86,7 +86,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw new Error('이메일과 비밀번호를 입력해주세요.');
       }
       const mockToken = 'mock_jwt_access_token_' + Math.random().toString(36).substring(7);
-      const mockUser = { nickname: '민지', email };
+      const mockRole = email.includes('admin') ? 'ADMIN' : 'USER';
+      const mockUser = { nickname: mockRole === 'ADMIN' ? '관리자' : '민지', email, role: mockRole };
       
       setAccessTokenState(mockToken);
       setAccessToken(mockToken);
@@ -101,11 +102,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const response = await client.post('/auth/login', { email, password });
-      const { accessToken: token, nickname } = response.data.data;
+      const { accessToken: token, nickname, role } = response.data.data;
       setAccessTokenState(token);
       setAccessToken(token);
       
-      const realUser = { nickname, email };
+      const realUser = { nickname, email, role: role || 'USER' };
       setUser(realUser);
     } catch (error: unknown) {
       let errorMsg = '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.';
