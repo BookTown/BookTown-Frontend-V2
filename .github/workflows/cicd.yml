@@ -101,7 +101,7 @@ jobs:
           CLEAN_DIST_ID=$(echo "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" | tr -d '\r\n[:space:]')
           aws cloudfront create-invalidation \
             --distribution-id "$CLEAN_DIST_ID" \
-            --paths "/index.html" "/"
+            --paths "/index.html" "/" "/favicon.ico" "/favicon.png" "/apple-touch-icon.png" "/favicon.svg"
 
       - name: 배포 완료 알림
         run: echo "✅ 배포 완료 → https://www.booktown.shop"
