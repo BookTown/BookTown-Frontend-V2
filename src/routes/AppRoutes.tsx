@@ -8,6 +8,8 @@ import PublicRoute from './PublicRoute';
 import HealthCheck from '../pages/HealthCheck';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
+import BookHome from '../pages/BookHome';
+import BookDetail from '../pages/BookDetail';
 import { OAuthSuccess, OAuthFailure } from '../pages/OAuthCallback';
 import { NotFoundPage, ForbiddenPage } from '../pages/ErrorPages';
 import { CustomCursor } from '../components/Primitives';
@@ -44,7 +46,8 @@ const AppRouterBody: React.FC = () => {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/health" element={<HealthCheck />} />
-          <Route path="/" element={<Navigate to="/health" replace />} />
+          <Route path="/books/:bookId" element={<BookDetail />} />
+          <Route path="/" element={<BookHome />} />
         </Route>
 
         {/* Error Fallback Routes */}
