@@ -10,7 +10,8 @@ import {
   XCircle, 
   ExternalLink, 
   BarChart3, 
-  ShieldCheck 
+  ShieldCheck,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { DkTopNav } from '../components/Primitives';
@@ -63,6 +64,7 @@ const AdminDashboard: React.FC = () => {
   // 대시보드 URL 설정 (환경변수 또는 합리적 기본값)
   const grafanaUrl = import.meta.env.VITE_GRAFANA_URL || 'https://monitoring.booktown.shop';
   const sonarUrl = import.meta.env.VITE_SONARQUBE_URL || 'https://sonarcloud.io/summary/new_code?id=BookTown_BookTown-Frontend-V2';
+  const swaggerUrl = import.meta.env.VITE_SWAGGER_URL || 'https://api.booktown.shop/api/v1/swagger-ui/index.html';
 
   const shortcutConfig = [
     {
@@ -84,6 +86,16 @@ const AdminDashboard: React.FC = () => {
       hoverBg: 'bg-amber-500/5 dark:bg-amber-500/10',
       hoverText: 'group-hover:text-amber-500',
       icon: <ShieldCheck className="w-5 h-5" />,
+    },
+    {
+      title: 'Swagger API 명세서',
+      desc: '백엔드 API 엔드포인트 설계서 및 명세 문서를 브라우저에서 직접 테스트하고 실시간으로 조회합니다.',
+      url: swaggerUrl,
+      badgeBg: 'bg-blue-500/10',
+      badgeText: 'text-blue-600 dark:text-blue-400',
+      hoverBg: 'bg-blue-600/5 dark:bg-blue-600/10',
+      hoverText: 'group-hover:text-blue-500',
+      icon: <BookOpen className="w-5 h-5" />,
     },
   ];
 
