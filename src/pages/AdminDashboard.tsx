@@ -19,11 +19,23 @@ import { DkTopNav } from '../components/Primitives';
 interface ServiceStatus {
   status: string;
   services?: {
-    mysql: string;
-    redis: string;
-    mongodb: string;
-    chroma: string;
+    mysql: boolean | string;
+    redis: boolean | string;
+    mongodb: boolean | string;
+    chroma: boolean | string;
   };
+}
+
+interface ShortcutItem {
+  title: string;
+  desc: string;
+  url: string;
+  badgeBg: string;
+  badgeText: string;
+  hoverBg: string;
+  hoverText: string;
+  favicon: string;
+  fallbackIcon: React.ReactNode;
 }
 
 const servicesConfig = [
@@ -53,6 +65,42 @@ const servicesConfig = [
   },
 ];
 
+const ShortcutCard: React.FC<{ item: ShortcutItem }> = ({ item }) => {
+  const [imgFailed, setImgFailed] = useState(false);
+
+  return (
+    <a 
+      href={item.url} 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="glass rounded-2xl p-6 hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 shadow-xl shadow-purple-950/2 dark:shadow-purple-950/10 flex flex-col group relative overflow-hidden"
+    >
+      <div className={`absolute top-0 right-0 w-[120px] h-[120px] rounded-bl-full ${item.hoverBg} group-hover:scale-110 transition duration-500`} />
+      <div className="flex items-center justify-between mb-4">
+        <div className={`w-10 h-10 rounded-xl ${item.badgeBg} flex items-center justify-center ${item.badgeText} overflow-hidden p-1.5`}>
+          {!imgFailed && item.favicon ? (
+            <img 
+              src={item.favicon} 
+              alt={`${item.title} logo`} 
+              className="w-full h-full object-contain"
+              onError={() => setImgFailed(true)} 
+            />
+          ) : (
+            item.fallbackIcon
+          )}
+        </div>
+        <ExternalLink className={`w-4 h-4 text-slate-400 dark:text-white/35 ${item.hoverText} transition`} />
+      </div>
+      <h3 className={`font-serif text-[17px] font-medium text-slate-800 dark:text-white ${item.hoverText} transition`}>
+        {item.title}
+      </h3>
+      <p className="text-[12px] text-slate-500 dark:text-white/40 font-light mt-1.5 leading-relaxed">
+        {item.desc}
+      </p>
+    </a>
+  );
+};
+
 const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -62,11 +110,11 @@ const AdminDashboard: React.FC = () => {
   const [refreshCount, setRefreshCount] = useState<number>(0);
 
   // 대시보드 URL 설정 (환경변수 또는 합리적 기본값)
-  const grafanaUrl = import.meta.env.VITE_GRAFANA_URL || 'https://monitoring.booktown.shop';
+  const grafanaUrl = import.meta.env.VITE_GRAFANA_URL || '/monitoring';
   const sonarUrl = import.meta.env.VITE_SONARQUBE_URL || 'https://sonarcloud.io/summary/new_code?id=BookTown_BookTown-Frontend-V2';
   const swaggerUrl = import.meta.env.VITE_SWAGGER_URL || 'https://api.booktown.shop/api/v1/swagger-ui/index.html';
 
-  const shortcutConfig = [
+  const shortcutConfig: ShortcutItem[] = [
     {
       title: 'Grafana 모니터링',
       desc: '서버의 CPU, 메모리, 디스크 자원 사용량과 트래픽 동향을 실시간 대시보드로 시각화하여 관측합니다.',
@@ -75,7 +123,8 @@ const AdminDashboard: React.FC = () => {
       badgeText: 'text-purple-600 dark:text-purple-400',
       hoverBg: 'bg-purple-600/5 dark:bg-purple-600/10',
       hoverText: 'group-hover:text-purple-500',
-      icon: <BarChart3 className="w-5 h-5" />,
+      favicon: 'https://raw.githubusercontent.com/grafana/grafana/main/public/img/fav32.png',
+      fallbackIcon: <BarChart3 className="w-5 h-5" />,
     },
     {
       title: 'SonarCloud 품질 검사',
@@ -85,7 +134,8 @@ const AdminDashboard: React.FC = () => {
       badgeText: 'text-amber-600 dark:text-amber-400',
       hoverBg: 'bg-amber-500/5 dark:bg-amber-500/10',
       hoverText: 'group-hover:text-amber-500',
-      icon: <ShieldCheck className="w-5 h-5" />,
+      favicon: 'https://sonarcloud.io/favicon.ico',
+      fallbackIcon: <ShieldCheck className="w-5 h-5" />,
     },
     {
       title: 'Swagger API 명세서',
@@ -95,7 +145,8 @@ const AdminDashboard: React.FC = () => {
       badgeText: 'text-blue-600 dark:text-blue-400',
       hoverBg: 'bg-blue-600/5 dark:bg-blue-600/10',
       hoverText: 'group-hover:text-blue-500',
-      icon: <BookOpen className="w-5 h-5" />,
+      favicon: 'https://swagger.io/favicon.ico',
+      fallbackIcon: <BookOpen className="w-5 h-5" />,
     },
   ];
 
@@ -234,8 +285,9 @@ const AdminDashboard: React.FC = () => {
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">연결된 인프라 리소스</h3>
                     
                     {servicesConfig.map((srv) => {
-                      const srvStatus = data.services?.[srv.key] ?? (data.status === 'UP' ? 'UP' : 'DOWN');
-                      const isConnected = srvStatus === 'UP';
+                      const srvVal = data.services?.[srv.key];
+                      // 백엔드가 boolean(true/false)을 주거나, 혹은 문자열 'UP'을 줄 수 있으므로 둘 다 지원
+                      const isConnected = srvVal === true || srvVal === 'UP';
                       return (
                         <div key={srv.key} className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -268,27 +320,7 @@ const AdminDashboard: React.FC = () => {
             </h2>
 
             {shortcutConfig.map((item, idx) => (
-              <a 
-                key={idx}
-                href={item.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="glass rounded-2xl p-6 hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 shadow-xl shadow-purple-950/2 dark:shadow-purple-950/10 flex flex-col group relative overflow-hidden"
-              >
-                <div className={`absolute top-0 right-0 w-[120px] h-[120px] rounded-bl-full ${item.hoverBg} group-hover:scale-110 transition duration-500`} />
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-10 h-10 rounded-xl ${item.badgeBg} flex items-center justify-center ${item.badgeText}`}>
-                    {item.icon}
-                  </div>
-                  <ExternalLink className={`w-4 h-4 text-slate-400 dark:text-white/35 ${item.hoverText} transition`} />
-                </div>
-                <h3 className={`font-serif text-[17px] font-medium text-slate-800 dark:text-white ${item.hoverText} transition`}>
-                  {item.title}
-                </h3>
-                <p className="text-[12px] text-slate-500 dark:text-white/40 font-light mt-1.5 leading-relaxed">
-                  {item.desc}
-                </p>
-              </a>
+              <ShortcutCard key={idx} item={item} />
             ))}
           </div>
 
