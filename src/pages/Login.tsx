@@ -44,7 +44,7 @@ export const Login: React.FC = () => {
         .catch((err) => setErrorMsg(err instanceof Error ? err.message : '소셜 로그인에 실패했습니다.'));
     } else {
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL ?? 'https://api.booktown.shop';
-      window.location.href = `${apiBaseUrl}/oauth2/authorization/${provider}`;
+      window.location.href = `${apiBaseUrl}/api/v1/auth/oauth2/${provider}/login`;
     }
   };
 
