@@ -5,6 +5,7 @@ import { ThemeProvider } from '../context/ThemeContext';
 import { useAuth } from '../hooks/useAuth';
 import ProtectedRoute from './ProtectedRoute';
 import PublicRoute from './PublicRoute';
+import AdminRoute from './AdminRoute';
 import AdminDashboard from '../pages/AdminDashboard';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
@@ -46,12 +47,16 @@ const AppRouterBody: React.FC = () => {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/health" element={<Navigate to="/admin" replace />} />
           <Route path="/books/:bookId" element={<BookDetail />} />
           <Route path="/books/:bookId/quiz" element={<QuizPage />} />
           <Route path="/books/:bookId/quiz/result" element={<QuizResultPage />} />
           <Route path="/" element={<BookHome />} />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
 
         {/* Error Fallback Routes */}

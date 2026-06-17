@@ -254,7 +254,11 @@ const QuizLayout: React.FC<QuizLayoutProps> = ({
       <div className="md:hidden flex-1 flex flex-col">
         <div className="h-[52px] px-4 flex items-center justify-between border-b border-white/5 relative z-10 shrink-0 bg-[#0F0E13]/80 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate(`/books/${book.id}`)} className="text-white/45 active:text-white transition">
+            <button 
+              onClick={() => navigate(`/books/${book.id}`)} 
+              className="text-white/45 active:text-white transition"
+              aria-label="상세 페이지로 이동"
+            >
               <DBack className="w-5 h-5" />
             </button>
             <div>
@@ -409,10 +413,40 @@ export const QuizResultPage: React.FC = () => {
   const { isMockMode } = useAuth();
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const state = location.state as { score?: number; total?: number; answers?: Array<{ q: string; correct: string; chosen: string; ok: boolean }> } | null;
 
   useEffect(() => { if (!state) navigate(`/books/${bookId}`, { replace: true }); }, [state, navigate, bookId]);
-  useEffect(() => { if (bookId) getBookById(isMockMode, bookId).then(setBook).finally(() => setLoading(false)); }, [bookId, isMockMode]);
+  useEffect(() => { 
+    if (bookId) {
+      getBookById(isMockMode, bookId)
+        .then(setBook)
+        .catch((err) => {
+          console.error(err);
+          setError('도서 정보를 불러오는데 실패했습니다.');
+        })
+        .finally(() => setLoading(false));
+    } 
+  }, [bookId, isMockMode]);
+
+  if (error) {
+    return (
+      <div className="min-h-screen dk-surface flex flex-col items-center justify-center text-center p-6 relative select-none">
+        <div className="dk-grain absolute inset-0 opacity-40 pointer-events-none" />
+        <div className="glass rounded-2xl p-8 max-w-md border border-white/5 z-10">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-white mb-2">오류가 발생했습니다</h2>
+          <p className="text-white/60 text-sm mb-6">{error}</p>
+          <button 
+            onClick={() => navigate(`/books/${bookId}`)} 
+            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-sm font-medium transition"
+          >
+            도서 상세로 돌아가기
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading || !book || !state) return <div className="min-h-screen dk-surface flex items-center justify-center"><Loader2 className="w-10 h-10 text-purple-500 animate-spin" /></div>;
 

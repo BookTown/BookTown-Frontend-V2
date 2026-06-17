@@ -25,6 +25,33 @@ interface ServiceStatus {
   };
 }
 
+const servicesConfig = [
+  {
+    key: 'mysql' as const,
+    name: 'MySQL 데이터베이스',
+    desc: '도서 메타데이터 및 유저 회원 정보 저장소',
+    iconColor: 'text-blue-500 dark:text-blue-400',
+  },
+  {
+    key: 'mongodb' as const,
+    name: 'MongoDB',
+    desc: '도서 요약 및 씬(Scene) 정보 문서 저장소',
+    iconColor: 'text-emerald-600 dark:text-emerald-400',
+  },
+  {
+    key: 'redis' as const,
+    name: 'Redis',
+    desc: '인메모리 캐싱 및 리프레시 토큰 세션 관리',
+    iconColor: 'text-rose-500',
+  },
+  {
+    key: 'chroma' as const,
+    name: 'ChromaDB',
+    desc: '임베딩 벡터 스토어 및 시맨틱 의미 검색 지원',
+    iconColor: 'text-indigo-500 dark:text-indigo-400',
+  },
+];
+
 const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -52,10 +79,20 @@ const AdminDashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // 즉시 호출
+    const timerId = setTimeout(() => {
       fetchHealth();
     }, 0);
-    return () => clearTimeout(timer);
+
+    // 30초마다 자동 리프레시 진행
+    const intervalId = setInterval(() => {
+      fetchHealth();
+    }, 30000);
+
+    return () => {
+      clearTimeout(timerId);
+      clearInterval(intervalId);
+    };
   }, [refreshCount]);
 
   const handleRefresh = () => {
@@ -97,7 +134,7 @@ const AdminDashboard: React.FC = () => {
             책고을 시스템 관리자
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5 font-light">
-            서버 인프라의 실시간 헬스체크 및 개발 모니터링 대시보드 바로가기를 제공합니다.
+            서버 인프라의 실시간 헬스체크 및 개발 모니터링 대시보드 바로가기를 제공합니다. (30초마다 자동 갱신)
           </p>
         </div>
 
@@ -122,7 +159,7 @@ const AdminDashboard: React.FC = () => {
                 </button>
               </div>
 
-              {loading ? (
+              {loading && !data ? (
                 <div className="flex-1 flex flex-col items-center justify-center py-20 gap-3">
                   <RefreshCw className="w-8 h-8 text-purple-500 animate-spin" />
                   <p className="text-slate-500 text-xs animate-pulse">코어 서비스 상태를 조회하고 있습니다...</p>
@@ -141,7 +178,12 @@ const AdminDashboard: React.FC = () => {
                 <div className="space-y-6 flex-1">
                   {/* Overall Status */}
                   <div className="flex items-center justify-between p-4 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5">
-                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium font-sans">종합 시스템 상태</span>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-slate-500 dark:text-slate-400 font-medium font-sans">종합 시스템 상태</span>
+                      {loading && (
+                        <span className="text-[10px] text-purple-500 animate-pulse mt-0.5 font-light">업데이트 중...</span>
+                      )}
+                    </div>
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
                       data.status === 'UP' 
                         ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' 
@@ -156,70 +198,26 @@ const AdminDashboard: React.FC = () => {
                   <div className="space-y-3">
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">연결된 인프라 리소스</h3>
                     
-                    {/* MySQL */}
-                    <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Database className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-                        <div>
-                          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">MySQL 데이터베이스</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400/70">도서 메타데이터 및 유저 회원 정보 저장소</span>
+                    {servicesConfig.map((srv) => {
+                      const srvStatus = data.services?.[srv.key] ?? (data.status === 'UP' ? 'UP' : 'DOWN');
+                      const isConnected = srvStatus === 'UP';
+                      return (
+                        <div key={srv.key} className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <Database className={`w-5 h-5 ${srv.iconColor}`} />
+                            <div>
+                              <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">{srv.name}</span>
+                              <span className="text-[10px] text-slate-500 dark:text-slate-400/70">{srv.desc}</span>
+                            </div>
+                          </div>
+                          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                            isConnected ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                          }`}>
+                            {isConnected ? 'Connected' : 'Disconnected'}
+                          </span>
                         </div>
-                      </div>
-                      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                        (data.services?.mysql ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
-                      }`}>
-                        {(data.services?.mysql ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
-                      </span>
-                    </div>
-
-                    {/* MongoDB */}
-                    <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                        <div>
-                          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">MongoDB</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400/70">도서 요약 및 씬(Scene) 정보 문서 저장소</span>
-                        </div>
-                      </div>
-                      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                        (data.services?.mongodb ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
-                      }`}>
-                        {(data.services?.mongodb ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
-                      </span>
-                    </div>
-
-                    {/* Redis */}
-                    <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Database className="w-5 h-5 text-rose-500" />
-                        <div>
-                          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">Redis</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400/70">인메모리 캐싱 및 리프레시 토큰 세션 관리</span>
-                        </div>
-                      </div>
-                      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                        (data.services?.redis ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
-                      }`}>
-                        {(data.services?.redis ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
-                      </span>
-                    </div>
-
-                    {/* ChromaDB */}
-                    <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Database className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
-                        <div>
-                          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">ChromaDB</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400/70">임베딩 벡터 스토어 및 시맨틱 의미 검색 지원</span>
-                        </div>
-                      </div>
-                      <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                        (data.services?.chroma ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
-                      }`}>
-                        {(data.services?.chroma ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
-                      </span>
-                    </div>
-
+                      );
+                    })}
                   </div>
                 </div>
               ) : (
