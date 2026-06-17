@@ -8,8 +8,10 @@ import PublicRoute from './PublicRoute';
 import HealthCheck from '../pages/HealthCheck';
 import Login from '../pages/Login';
 import Signup from '../pages/Signup';
+import { OAuthSuccess, OAuthFailure } from '../pages/OAuthCallback';
 import { NotFoundPage, ForbiddenPage } from '../pages/ErrorPages';
 import { CustomCursor } from '../components/Primitives';
+
 
 const AppRouterBody: React.FC = () => {
   const { isLoading } = useAuth();
@@ -34,6 +36,10 @@ const AppRouterBody: React.FC = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Route>
+
+        {/* OAuth Callback Routes */}
+        <Route path="/oauth/success" element={<OAuthSuccess />} />
+        <Route path="/oauth/failure" element={<OAuthFailure />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
