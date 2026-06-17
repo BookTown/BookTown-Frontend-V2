@@ -12,6 +12,7 @@ interface ServiceStatus {
     mysql: string;
     redis: string;
     mongodb: string;
+    chroma: string;
   };
 }
 
@@ -176,6 +177,22 @@ const HealthCheck: React.FC = () => {
                     (data.services?.redis ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
                   }`}>
                     {(data.services?.redis ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
+                  </span>
+                </div>
+
+                {/* ChromaDB */}
+                <div className="glass-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition-colors rounded-xl p-3.5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Database className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+                    <div>
+                      <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">ChromaDB</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400/70">Vector Store & Semantic Search</span>
+                    </div>
+                  </div>
+                  <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                    (data.services?.chroma ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                  }`}>
+                    {(data.services?.chroma ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
                   </span>
                 </div>
 
