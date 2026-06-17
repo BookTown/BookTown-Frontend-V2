@@ -8,7 +8,7 @@ import { DkTopNav } from '../components/Primitives';
 
 interface ServiceStatus {
   status: string;
-  services: {
+  services?: {
     mysql: string;
     redis: string;
     mongodb: string;
@@ -141,9 +141,9 @@ const HealthCheck: React.FC = () => {
                     </div>
                   </div>
                   <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                    data.services.mysql === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                    (data.services?.mysql ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
                   }`}>
-                    {data.services.mysql === 'UP' ? 'Connected' : 'Disconnected'}
+                    {(data.services?.mysql ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
                   </span>
                 </div>
 
@@ -157,9 +157,9 @@ const HealthCheck: React.FC = () => {
                     </div>
                   </div>
                   <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                    data.services.mongodb === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                    (data.services?.mongodb ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
                   }`}>
-                    {data.services.mongodb === 'UP' ? 'Connected' : 'Disconnected'}
+                    {(data.services?.mongodb ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
                   </span>
                 </div>
 
@@ -173,9 +173,9 @@ const HealthCheck: React.FC = () => {
                     </div>
                   </div>
                   <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                    data.services.redis === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
+                    (data.services?.redis ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'
                   }`}>
-                    {data.services.redis === 'UP' ? 'Connected' : 'Disconnected'}
+                    {(data.services?.redis ?? (data.status === 'UP' ? 'UP' : 'DOWN')) === 'UP' ? 'Connected' : 'Disconnected'}
                   </span>
                 </div>
 
