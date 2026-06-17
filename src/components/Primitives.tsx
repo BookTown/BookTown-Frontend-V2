@@ -413,10 +413,8 @@ export const DkTopNav: React.FC<DkTopNavProps> = ({ active, go, onLogout, nickna
   return (
     <div className="absolute top-0 inset-x-0 z-30 glass-dark border-b border-black/5 dark:border-white/5">
       <div className="h-16 flex items-center px-8 gap-6">
-        <button type="button" onClick={() => go('home')} className="flex items-baseline gap-2.5">
-          <div className="w-7 h-7 rounded-full grid place-items-center" style={{ background: 'linear-gradient(135deg,#7AA3D6,#3E6FA9)' }}>
-            <span className="font-display text-white text-[14px] leading-none italic">B</span>
-          </div>
+        <button type="button" onClick={() => go('home')} className="flex items-center gap-2.5">
+          <img src="/favicon.png" alt="책고을 로고" className="w-6 h-6 object-contain" />
           <span className="font-display text-slate-900 dark:text-white text-[18px] leading-none font-medium">책고을</span>
           <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-400 dark:text-white/40">BOOK · TOWN</span>
         </button>
@@ -473,10 +471,8 @@ export interface DkMarkProps {
 
 export const DkMark: React.FC<DkMarkProps> = ({ size = 22 }) => {
   return (
-    <div className="flex items-baseline gap-2">
-      <div className="rounded-full grid place-items-center" style={{ width: size, height: size, background: 'linear-gradient(135deg,#7AA3D6,#3E6FA9)' }}>
-        <span className="font-display text-white italic leading-none" style={{ fontSize: size * 0.62 }}>B</span>
-      </div>
+    <div className="flex items-center gap-2">
+      <img src="/favicon.png" alt="책고을 로고" style={{ width: size, height: size }} className="object-contain" />
       <span className="font-display text-white leading-none font-medium" style={{ fontSize: size * 0.92 }}>책고을</span>
     </div>
   );
