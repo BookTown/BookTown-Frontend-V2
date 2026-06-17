@@ -12,6 +12,7 @@ import BookHome from '../pages/BookHome';
 import BookDetail from '../pages/BookDetail';
 import { OAuthSuccess, OAuthFailure } from '../pages/OAuthCallback';
 import { NotFoundPage, ForbiddenPage } from '../pages/ErrorPages';
+import { QuizPage, QuizResultPage } from '../pages/QuizPages';
 import { CustomCursor } from '../components/Primitives';
 
 
@@ -47,6 +48,8 @@ const AppRouterBody: React.FC = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="/health" element={<HealthCheck />} />
           <Route path="/books/:bookId" element={<BookDetail />} />
+          <Route path="/books/:bookId/quiz" element={<QuizPage />} />
+          <Route path="/books/:bookId/quiz/result" element={<QuizResultPage />} />
           <Route path="/" element={<BookHome />} />
         </Route>
 

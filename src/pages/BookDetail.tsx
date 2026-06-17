@@ -192,7 +192,7 @@ export const BookDetail: React.FC = () => {
                 </button>
                 <button
                   disabled={!book.hasQuiz}
-                  onClick={() => alert(`${book.title} 퀴즈 풀기 기능은 준비 중입니다.`)}
+                  onClick={() => navigate(`/books/${book.id}/quiz`)}
                   className="glass-soft disabled:opacity-30 rounded-xl py-3 text-[11px] font-semibold text-slate-700 dark:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition flex flex-col items-center gap-1.5"
                 >
                   <CheckSquare className="w-4 h-4 text-emerald-500" />
