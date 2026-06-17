@@ -64,6 +64,29 @@ const AdminDashboard: React.FC = () => {
   const grafanaUrl = import.meta.env.VITE_GRAFANA_URL || 'https://monitoring.booktown.shop';
   const sonarUrl = import.meta.env.VITE_SONARQUBE_URL || 'https://sonarcloud.io/summary/new_code?id=BookTown_BookTown-Frontend-V2';
 
+  const shortcutConfig = [
+    {
+      title: 'Grafana 모니터링',
+      desc: '서버의 CPU, 메모리, 디스크 자원 사용량과 트래픽 동향을 실시간 대시보드로 시각화하여 관측합니다.',
+      url: grafanaUrl,
+      badgeBg: 'bg-purple-500/10',
+      badgeText: 'text-purple-600 dark:text-purple-400',
+      hoverBg: 'bg-purple-600/5 dark:bg-purple-600/10',
+      hoverText: 'group-hover:text-purple-500',
+      icon: <BarChart3 className="w-5 h-5" />,
+    },
+    {
+      title: 'SonarCloud 품질 검사',
+      desc: '정적 코드 분석을 통해 보안 취약점, 버그 가능성, 중복률 및 코드 스멜을 측정하고 정량적인 메트릭을 추적합니다.',
+      url: sonarUrl,
+      badgeBg: 'bg-amber-500/10',
+      badgeText: 'text-amber-600 dark:text-amber-400',
+      hoverBg: 'bg-amber-500/5 dark:bg-amber-500/10',
+      hoverText: 'group-hover:text-amber-500',
+      icon: <ShieldCheck className="w-5 h-5" />,
+    },
+  ];
+
   const fetchHealth = async () => {
     setLoading(true);
     setError(null);
@@ -232,49 +255,29 @@ const AdminDashboard: React.FC = () => {
               외부 모니터링 및 품질 대시보드
             </h2>
 
-            {/* Grafana Card */}
-            <a 
-              href={grafanaUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="glass rounded-2xl p-6 hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 shadow-xl shadow-purple-950/2 dark:shadow-purple-950/10 flex flex-col group relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-[120px] h-[120px] rounded-bl-full bg-purple-600/5 dark:bg-purple-600/10 group-hover:scale-110 transition duration-500" />
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                  <BarChart3 className="w-5 h-5" />
+            {shortcutConfig.map((item, idx) => (
+              <a 
+                key={idx}
+                href={item.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="glass rounded-2xl p-6 hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 shadow-xl shadow-purple-950/2 dark:shadow-purple-950/10 flex flex-col group relative overflow-hidden"
+              >
+                <div className={`absolute top-0 right-0 w-[120px] h-[120px] rounded-bl-full ${item.hoverBg} group-hover:scale-110 transition duration-500`} />
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`w-10 h-10 rounded-xl ${item.badgeBg} flex items-center justify-center ${item.badgeText}`}>
+                    {item.icon}
+                  </div>
+                  <ExternalLink className={`w-4 h-4 text-slate-400 dark:text-white/35 ${item.hoverText} transition`} />
                 </div>
-                <ExternalLink className="w-4 h-4 text-slate-400 dark:text-white/35 group-hover:text-purple-500 transition" />
-              </div>
-              <h3 className="font-serif text-[17px] font-medium text-slate-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition">
-                Grafana 모니터링
-              </h3>
-              <p className="text-[12px] text-slate-500 dark:text-white/40 font-light mt-1.5 leading-relaxed">
-                서버의 CPU, 메모리, 디스크 자원 사용량과 트래픽 동향을 실시간 대시보드로 시각화하여 관측합니다.
-              </p>
-            </a>
-
-            {/* SonarQube Card */}
-            <a 
-              href={sonarUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="glass rounded-2xl p-6 hover:scale-[1.02] active:scale-[0.99] transition-all duration-300 shadow-xl shadow-purple-950/2 dark:shadow-purple-950/10 flex flex-col group relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-[120px] h-[120px] rounded-bl-full bg-amber-500/5 dark:bg-amber-500/10 group-hover:scale-110 transition duration-500" />
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <ExternalLink className="w-4 h-4 text-slate-400 dark:text-white/35 group-hover:text-amber-500 transition" />
-              </div>
-              <h3 className="font-serif text-[17px] font-medium text-slate-800 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition">
-                SonarCloud 품질 검사
-              </h3>
-              <p className="text-[12px] text-slate-500 dark:text-white/40 font-light mt-1.5 leading-relaxed">
-                정적 코드 분석을 통해 보안 취약점, 버그 가능성, 중복률 및 코드 스멜을 측정하고 정량적인 메트릭을 추적합니다.
-              </p>
-            </a>
+                <h3 className={`font-serif text-[17px] font-medium text-slate-800 dark:text-white ${item.hoverText} transition`}>
+                  {item.title}
+                </h3>
+                <p className="text-[12px] text-slate-500 dark:text-white/40 font-light mt-1.5 leading-relaxed">
+                  {item.desc}
+                </p>
+              </a>
+            ))}
           </div>
 
         </div>
